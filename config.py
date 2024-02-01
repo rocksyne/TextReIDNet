@@ -29,10 +29,10 @@ class DotDict(dict):
     __delattr__ = dict.__delitem__
 
 
-    
+
 def sys_configuration(platform_name:str=platform.node(), dataset_name:str="CUHK-PEDES", show_configs:bool=False)->DotDict():
     """
-    Doc.: Provides dot.notation access to all system parameters
+    Doc.:   Provides dot.notation access to all system parameters
     Args.:  platform_name:  The name of the platform on which application is executing or training
                             Acceptable values are 'PC-SIM','deeplearning','ultron','nano'
             dataset_name:   The name of the dataset for training or evaluation
@@ -49,7 +49,7 @@ def sys_configuration(platform_name:str=platform.node(), dataset_name:str="CUHK-
     
     if dataset_name in allowed_dataset_names:
         raise ValueError('`dataset_name` be must string and of value `CUHK-PEDES`, `RSTPReid`\
-                         Provided name is `{}`.'.format(platform_name))
+                         Provided name is `{}`.'.format(dataset_name))
     
     # Experimented with different tokenizers to get the maximum index of the tokens
     # Bert tokenizer: 29609

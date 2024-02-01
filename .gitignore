@@ -161,4 +161,4 @@ cython_debug/
 
 
 # folders to ignore
-data/bpe_simple_vocab_16e6.txt.gz
+TextReIDNet/data/bpe_simple_vocab_16e6.txt.gz
