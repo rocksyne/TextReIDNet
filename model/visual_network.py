@@ -27,14 +27,10 @@ class VisualNetwork(nn.Module):
         """
         super(VisualNetwork, self).__init__()
         self.model = models.efficientnet_b0(weights=EfficientNet_B0_Weights.DEFAULT)
-
-        # final layer feature
         self.feature_blocks = self.model.features
 
     def forward(self, x):
         features = []
-
-        # Stages 1 to 8
         for block in self.feature_blocks:
             x = block(x)
             features.append(x)
