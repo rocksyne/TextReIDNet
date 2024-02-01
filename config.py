@@ -1,5 +1,5 @@
 """
-January 2023
+ⓒ January 2023
 Doc: Codebase configuration file.
 License: Please see license file for details.
 """
