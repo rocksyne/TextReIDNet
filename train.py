@@ -19,6 +19,7 @@ from torch.cuda.amp import GradScaler
 from config import sys_configuration
 from utils.miscellaneous_utils import set_seed
 from utils.miscellaneous_utils import  setup_logger
+from datasets.cuhkpedes_dataloader import build_cuhkpedes_dataloader
 from model.textreidnet import TextReIDNet
 
 # See https://pytorch.org/docs/stable/multiprocessing.html
@@ -33,7 +34,15 @@ train_logger = setup_logger(name='train_logger',log_file_path=config.train_log_p
 test_logger  = setup_logger(name='test_logger',log_file_path=config.test_log_path)
 model = TextReIDNet(config)
 
-# print(os.path.dirname(os.path.abspath(__file__)))
-# train_logger.info("we are infoing here tooooooooooooooo")
-# test_logger.info("We are testing here agaiiinnnnnnnnnnnnn")
+# dataset stuff
+train_dataset, train_num_classes = build_cuhkpedes_dataloader(dataset_split='train', config=config)
+val_dataset, val_num_classes = build_cuhkpedes_dataloader(dataset_split='val', config=config)
+test_dataset, test_num_classes = build_cuhkpedes_dataloader(dataset_split='test', config=config)
+
+
+print("Train: length:{} classes{} ".format(len(train_dataset), train_num_classes))
+print("Val: length:{} classes{} ".format(len(val_dataset), val_num_classes))
+print("Test: length:{} classes{} ".format(len(test_dataset), test_num_classes))
+
+
 

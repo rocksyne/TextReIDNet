@@ -69,8 +69,10 @@ def sys_configuration(platform_name:str=platform.node(), dataset_name:str="CUHK-
     # +++++++++++++++++++++++++++++++++++++++++++++++++
     # +++++++++[Langauge model configurations]+++++++++
     # +++++++++++++++++++++++++++++++++++++++++++++++++
-    configs["caption_length_max"]:int = 100 # maximum number of tokens
-    configs['feature_length']:int = 1024 # maximum number of features
+    configs['dropout_rate']:float = 0.30 # Probability one GRU neurns that should be dropped
+    configs['num_layers']:int = 1 # Number of GRU layers
+    configs["tokens_length_max"]:int = 100 # Maximum number of tokens
+    configs['feature_length']:int = 1024 # Maximum number of features
     configs['tokenizer_type']:str = 'bert' # Tokenizer types: bert, simple_tokenizer, tiktoken_cl100k, tiktoken_p50k, tiktoken_r50k
     # get the appropriate vocabulary size relative the tokenizer type
     # Add +1 to account for array indexing related operations
@@ -81,7 +83,7 @@ def sys_configuration(platform_name:str=platform.node(), dataset_name:str="CUHK-
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
     # +++++++++++++[visual model configuration]++++++++++
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
-    configs["img_size"]:tuple = (384, 128) # (H,W)
+    configs["image_size"]:tuple[int,int] = (384, 128) # (H,W)
 
 
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -104,7 +106,7 @@ def sys_configuration(platform_name:str=platform.node(), dataset_name:str="CUHK-
     configs["class_num"]:int = 11003
     configs['margin']:float = 0.2
 
-    
+
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
     # ++++++++++++[Data logging Configurations]++++++++++
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -146,8 +148,8 @@ def sys_configuration(platform_name:str=platform.node(), dataset_name:str="CUHK-
     configs['dataset_name'] = dataset_name
     if configs["dataset_name"] == "CUHK-PEDES": # https://arxiv.org/pdf/1702.05729.pdf
         configs["dataset_path"]:str = configs['CUHK_PEDES_dataset_parent_dir']
-        configs["mean"] = [0.4604, 0.4503, 0.4436] # Mean for RGB channels
-        configs["std"]  = [0.1980, 0.1974, 0.1976] # Standard deviation for RGB channels
+        configs["mean"] = [0.485, 0.456, 0.406] # Mean for RGB channels
+        configs["std"]  = [0.229, 0.224, 0.225] # Standard deviation for RGB channels
 
     elif configs["dataset_name"] == "RSTPReid": # https://arxiv.org/pdf/2109.05534.pdf
         raise NotImplementedError("No implementation for `{}` dataset.".format(configs["dataset_name"]))

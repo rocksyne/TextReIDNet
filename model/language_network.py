@@ -9,12 +9,10 @@ from torch.nn.utils.rnn import pack_padded_sequence
 
 
 class GRULanguageNetwork(nn.Module):
-    def __init__(self,config:dict=None, dropout_rate:float=0.3, num_layers:int=1):
+    def __init__(self,config:dict=None):
         """
         Doc.:   GRU Network
         Args.:  • config: dot-element accessible dictionary for configurations
-                • dropout_rate: percentage of neuron connections that should be dropped
-                • num_layers: number of layers
         """
         super(GRULanguageNetwork, self).__init__()
 
@@ -22,8 +20,8 @@ class GRULanguageNetwork(nn.Module):
             raise ValueError("`config` can not be none")
         
         self.embedding = nn.Embedding(config.vocab_size, config.embedding_dim, padding_idx=0)
-        self.dropout = nn.Dropout(dropout_rate)
-        self.gru = nn.GRU(config.embedding_dim, config.feature_length, num_layers=num_layers, bidirectional=True, bias=False)
+        self.dropout = nn.Dropout(config.dropout_rate)
+        self.gru = nn.GRU(config.embedding_dim, config.feature_length, num_layers=config.num_layers, bidirectional=True, bias=False)
 
 
     def forward(self, text_ids:torch.Tensor=None, text_length:torch.Tensor=None)->torch.Tensor:
