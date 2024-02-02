@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 the tool to read or write the data. Have a good luck !
-
 @author: zifyloo
 """
 

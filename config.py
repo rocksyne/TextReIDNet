@@ -14,6 +14,7 @@ import platform
 from prettytable import PrettyTable
 
 # Some global configurations
+PARENT_DIR = os.path.dirname(os.path.abspath(__file__))
 table = PrettyTable(['Configuration Parameter','Value'], hrules=1)
 table.align['Configuration Parameter'] = 'l' # Left-align column
 table.align['Value'] = 'l' # Left-align the column
@@ -43,11 +44,11 @@ def sys_configuration(platform_name:str=platform.node(), dataset_name:str="CUHK-
     allowed_platforms_names:list[str] = ['PC-SIM','deeplearning','ultron','nano'] # add your platform name to this list
     allowed_dataset_names:list[str] = ["CUHK-PEDES","RSTPReid"]
 
-    if platform_name in allowed_platforms_names:
+    if platform_name not in allowed_platforms_names:
         raise ValueError('`platform_name` be must string and of value `PC-SIM`,`deeplearning`,`ultron`,`nano` \
                          Provided name is `{}`. Add this name to the `allowed_platforms_names` variable.'.format(platform_name))
     
-    if dataset_name in allowed_dataset_names:
+    if dataset_name not in allowed_dataset_names:
         raise ValueError('`dataset_name` be must string and of value `CUHK-PEDES`, `RSTPReid`\
                          Provided name is `{}`.'.format(dataset_name))
     
@@ -74,6 +75,7 @@ def sys_configuration(platform_name:str=platform.node(), dataset_name:str="CUHK-
     # get the appropriate vocabulary size relative the tokenizer type
     # Add +1 to account for array indexing related operations
     configs['vocab_size'] = max_tokenizer_size[configs['tokenizer_type']]+1 
+    configs['embedding_dim']:int = 512 # number of embedding dimensions
 
 
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -101,6 +103,13 @@ def sys_configuration(platform_name:str=platform.node(), dataset_name:str="CUHK-
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
     configs["class_num"]:int = 11003
     configs['margin']:float = 0.2
+
+    
+    # +++++++++++++++++++++++++++++++++++++++++++++++++++
+    # ++++++++++++[Data logging Configurations]++++++++++
+    # +++++++++++++++++++++++++++++++++++++++++++++++++++
+    configs['train_log_path'] = os.path.join(PARENT_DIR,'data','logs','train.log')
+    configs['test_log_path']  = os.path.join(PARENT_DIR,'data','logs','test.log')
 
 
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -134,6 +143,7 @@ def sys_configuration(platform_name:str=platform.node(), dataset_name:str="CUHK-
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
     # ++++++++++[Dataset Specific Configurations]++++++++
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
+    configs['dataset_name'] = dataset_name
     if configs["dataset_name"] == "CUHK-PEDES": # https://arxiv.org/pdf/1702.05729.pdf
         configs["dataset_path"]:str = configs['CUHK_PEDES_dataset_parent_dir']
         configs["mean"] = [0.4604, 0.4503, 0.4436] # Mean for RGB channels
@@ -144,7 +154,7 @@ def sys_configuration(platform_name:str=platform.node(), dataset_name:str="CUHK-
     
     else:
         raise ValueError("Invalid value for dataset name.")
-
+    
 
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
     # ++++++++++++++++[Debug Info Matters]+++++++++++++++
