@@ -98,13 +98,15 @@ def sys_configuration(platform_name:str=platform.node(), dataset_name:str="CUHK-
     configs["val_dataset"]:str = "test" # Choose which dataset split to use for vaildation / evaluation. Values: `test` or `val`
     configs['device']:str  = "cuda" # If `cuda`, just use GPU ID 0 on all systems. Model is small anyway
     configs['progress_bar_width']:int = 3 # How long progress bar should be.
+    configs['seed']:int = 3407 # seed for reicated training
     
 
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
     # +++++++++++[Loss Functions Configurations]+++++++++
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
-    configs["class_num"]:int = 11003
     configs['margin']:float = 0.2
+    configs['ranking_loss_alpha']:float = 1.0
+    configs['identity_loss_beta']:float = 1.0
 
 
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -127,7 +129,7 @@ def sys_configuration(platform_name:str=platform.node(), dataset_name:str="CUHK-
         configs['CUHK_PEDES_dataset_parent_dir']:str = "/media/rockson/Data_drive/datasets/CUHK-PEDES"
         configs['RSTPReid_dataset_parent_dir']:str = None # TODO complete it
         configs['num_workers']:int = 6 # Use x CPU cores max
-        configs['batch_size']:int = 1 # Self explanatory, but use x batches
+        configs['batch_size']:int = 2 # Self explanatory, but use x batches
 
     elif platform_name == 'ultron': # Other dedicated simulation server
         configs['CUHK_PEDES_dataset_parent_dir']:str = "/datasets/CUHK-PEDES"

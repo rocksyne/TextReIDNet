@@ -5,7 +5,7 @@ Credit: Design consideration inspired by https://arxiv.org/pdf/2303.08466.pdf
 # 3rd party modules
 import torch
 from torch import nn
-from torch.nn.utils.rnn import pack_padded_sequence
+from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 
 
 class GRULanguageNetwork(nn.Module):
@@ -62,7 +62,7 @@ class GRULanguageNetwork(nn.Module):
 
         packed_feature, hn = gru(packed_text_embedding)  # Only hn for GRU
         total_length = text_embedding.size(1)
-        sort_feature = pack_padded_sequence(packed_feature, batch_first=True, total_length=total_length) # Including [feature, length]
+        sort_feature = pad_packed_sequence(packed_feature, batch_first=True, total_length=total_length) # Including [feature, length]
 
         unsort_feature = sort_feature[0][unsort_index, :]
         unsort_feature = (unsort_feature[:, :, :int(unsort_feature.size(2) / 2)]+ unsort_feature[:, :, int(unsort_feature.size(2) / 2):]) / 2

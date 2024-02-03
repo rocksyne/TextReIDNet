@@ -68,7 +68,7 @@ class TextReIDNet(nn.Module):
         visual_features = self.visual_network(image)
         visual_features = self.visual_features_downscale(visual_features)
         visual_features = self.adaptive_max_pooling(visual_features)
-        visual_features = self.depthwise_seperable_convolution(visual_features)
+        visual_features = self.depthwise_seperable_convolution(visual_features).squeeze(-1).contiguous()
         return visual_features
     
 
@@ -84,8 +84,8 @@ class TextReIDNet(nn.Module):
         Return: torch.tensor
         """
         textual_features = self.language_network(text_ids,text_length)
-        textual_features = torch.max(textual_features, dim=2, keepdim=True)
-        textual_features = self.depthwise_seperable_convolution(textual_features)
+        textual_features, _ = torch.max(textual_features, dim=2, keepdim=True)
+        textual_features = self.depthwise_seperable_convolution(textual_features).squeeze(-1).contiguous()
         return textual_features
 
 
