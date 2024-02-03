@@ -47,42 +47,57 @@ def get_transform(dataset_split:str=None, config:dict=None):
 
 
 # build the dataloader
-def build_cuhkpedes_dataloader(dataset_split:str=None, config:dict=None):
+def build_cuhkpedes_dataloader(config:dict=None):
     """Build the dataloader"""
     
-    if dataset_split not in ['train','val', 'test']:
-        raise ValueError("Invalid dataset_split. Expected value to be `train`, `val`, `test` but got `{}`".format(dataset_split))
-    
-    dataset = CUHKPEDES(config)
+    dataset_object = CUHKPEDES(config)
 
-    if dataset_split == 'train':
-        transform = get_transform('train',config)
-        image_text_data = dataset.train
-        shuffle = True
-        num_classes = len(dataset.train_id_container)
+    # lets do the train set
+    train_transform = get_transform('train',config)
+    train_data = ImageTextDataset(dataset_object.train,
+                                  train_transform,
+                                  tokenizer_type=config.tokenizer_type,
+                                  tokens_length_max=config.tokens_length_max)
+    train_data_loader = DataLoader(train_data,
+                                   batch_size=config.batch_size,
+                                   shuffle=True,
+                                   num_workers=config.num_workers,
+                                   collate_fn=collate)
+    train_num_classes = len(dataset_object.train_id_container)
     
-    elif dataset_split == 'val':
-        transform = get_transform('val',config)
-        image_text_data = dataset.val
-        shuffle = True
-        num_classes = len(dataset.val_id_container)
+    # lets do the validation set
+    val_transform = get_transform('val',config) # same as train by the way
+    val_data = ImageTextDataset(dataset_object.val,
+                                  val_transform,
+                                  tokenizer_type=config.tokenizer_type,
+                                  tokens_length_max=config.tokens_length_max)
+    val_data_loader = DataLoader(val_data,
+                                   batch_size=config.batch_size,
+                                   shuffle=True,
+                                   num_workers=config.num_workers,
+                                   collate_fn=collate)
+    val_num_classes = len(dataset_object.val_id_container)
     
-    else: # for test
-        transform = get_transform('test',config)
-        image_text_data = dataset.test
-        shuffle = False
-        num_classes = len(dataset.test_id_container)
+    # lets do for test set
+    test_transform = get_transform('test',config) # same as train by the way
+    test_data = ImageTextDataset(dataset_object.test,
+                                  test_transform,
+                                  tokenizer_type=config.tokenizer_type,
+                                  tokens_length_max=config.tokens_length_max)
+    test_data_loader = DataLoader(test_data,
+                                   batch_size=config.batch_size,
+                                   shuffle=False,
+                                   num_workers=config.num_workers,
+                                   collate_fn=collate)
+    test_num_classes = len(dataset_object.test_id_container)
     
-    data = ImageTextDataset(image_text_data,
-                            transform,
-                            tokenizer_type=config.tokenizer_type,
-                            tokens_length_max=config.tokens_length_max)
-        
-    data_loader = DataLoader(data,
-                             batch_size=config.batch_size,
-                             shuffle=shuffle,
-                             num_workers=config.num_workers,
-                             collate_fn=collate)
-
-    return data_loader, num_classes
+    data = dict(train_data_loader=train_data_loader,
+                train_num_classes=train_num_classes,
+                val_data_loader=val_data_loader,
+                val_num_classes=val_num_classes,
+                test_data_loader=test_data_loader,
+                test_num_classes=test_num_classes
+                )
+    
+    return data
 

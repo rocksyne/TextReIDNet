@@ -7,41 +7,39 @@ import os.path as op
 from typing import List
 
 # 3rd party modules
-import torchvision.transforms as T
 
 # Application modules
 from utils.iotools import read_json
-from utils.miscellaneous_utils import collate
 
 class CUHKPEDES(object):
    
     def __init__(self, config:dict):
         """
-        CUHK-PEDES dataset from Person Search with Natural Language Description (https://arxiv.org/pdf/1702.05729.pdf)
+        Doc.:   CUHK-PEDES dataset from Person Search with Natural Language Description (https://arxiv.org/pdf/1702.05729.pdf)
 
-        Dataset Statistics
-        -------------------
-        • train split:  34,054 images and 68,126 descriptions for 11,003 persons (ID: 1-11003)
-        • val split:    3,078  images and 6,158 descriptions for 1,000 persons (ID: 11004-12003)
-        • test split:   3,074  images and 6,156 descriptions for 1,000 persons (ID: 12004-13003)
+                Dataset Statistics
+                -------------------
+                • train split:  34,054 images and 68,126 descriptions for 11,003 persons (ID: 1-11003)
+                • val split:    3,078  images and 6,158 descriptions for 1,000 persons (ID: 11004-12003)
+                • test split:   3,074  images and 6,156 descriptions for 1,000 persons (ID: 12004-13003)
 
-        Totals:
-        -------------------
-        • images: 40,206
-        • persons: 13,003
-        
-        annotation format: 
-        [{'split', str,
-        'captions', list,
-        'file_path', str,
-        'processed_tokens', list,
-        'id', int}...]
+                Totals:
+                -------------------
+                • images: 40,206
+                • persons: 13,003
+                
+                annotation format: 
+                [{'split', str,
+                'captions', list,
+                'file_path', str,
+                'processed_tokens', list,
+                'id', int}...]
 
-        Because we will use the IDs as class labels, so we will have to start from 0. 
-        So instead of 1~11003, we will do 0~11002. Therefore the splits will be
-        • train (0-11002)
-        • val (11003-12002)
-        • test (12003-13002)
+                Because we will use the IDs as class labels, so we will have to start from 0. 
+                So instead of 1~11003, we will do 0~11002. Therefore the splits will be
+                • train (0-11002)
+                • val (11003-12002)
+                • test (12003-13002)
         """
         super(CUHKPEDES, self).__init__()
         self.dataset_dir = config.dataset_path
@@ -54,7 +52,6 @@ class CUHKPEDES(object):
 
         self._check_before_run()
         self.train_annos, self.test_annos, self.val_annos = self._split_anno(self.anno_path)
-
         self.train, self.train_id_container = self._process_anno(self.train_annos,'train') 
         self.val, self.val_id_container = self._process_anno(self.val_annos,'val') 
         self.test, self.test_id_container = self._process_anno(self.test_annos,'test')

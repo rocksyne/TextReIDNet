@@ -127,7 +127,7 @@ def sys_configuration(platform_name:str=platform.node(), dataset_name:str="CUHK-
         configs['CUHK_PEDES_dataset_parent_dir']:str = "/media/rockson/Data_drive/datasets/CUHK-PEDES"
         configs['RSTPReid_dataset_parent_dir']:str = None # TODO complete it
         configs['num_workers']:int = 6 # Use x CPU cores max
-        configs['batch_size']:int = 2 # Self explanatory, but use x batches
+        configs['batch_size']:int = 1 # Self explanatory, but use x batches
 
     elif platform_name == 'ultron': # Other dedicated simulation server
         configs['CUHK_PEDES_dataset_parent_dir']:str = "/datasets/CUHK-PEDES"
