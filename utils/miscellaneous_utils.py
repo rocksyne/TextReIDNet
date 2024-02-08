@@ -6,6 +6,7 @@ Doc.: Miscellaneous utilities for codebase
 import os
 import random
 import logging
+import datetime
 
 # 3rd party modules
 import torch
@@ -28,7 +29,11 @@ def set_seed(seed_value:int=3407):
 
 
 
-def setup_logger(name:str=None, log_file_path:str=None, write_mode:str='overwrite', level:logging=logging.INFO):
+def setup_logger(name:str=None, 
+                 log_file_path:str=None, 
+                 write_mode:str='overwrite', 
+                 level:logging=logging.INFO,
+                 timestamp:str=None):
     """
     Doc.:   Function to setup as many loggers as desired.
             The log files are cleared every time the 
@@ -38,6 +43,7 @@ def setup_logger(name:str=None, log_file_path:str=None, write_mode:str='overwrit
             • log_file_path: file path to the log file
             • write_mode: eaither append to existing file or overwrite. Values: `overwrite` or `append`
             • level: logging level
+            • timestamp: log the timestamp also
 
     Returns: logger object
     """
@@ -64,6 +70,11 @@ def setup_logger(name:str=None, log_file_path:str=None, write_mode:str='overwrit
     
     file_handler.setLevel(level)
     logger.addHandler(file_handler)
+
+    if timestamp:
+        logger.info("")
+        logger.info("Logging started at ",timestamp)
+        logger.info("")
 
     return logger
 

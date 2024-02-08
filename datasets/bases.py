@@ -16,7 +16,7 @@ class ImageTextDataset(Dataset):
     def __init__(self,
                  dataset,
                  transform=None,
-                 tokens_length_max: int = 100,
+                 tokens_length_max: int = 100, 
                  tokenizer_type:str="bert"):
         
         self.dataset = dataset
@@ -122,8 +122,6 @@ class TextDataset(Dataset):
         
         else:
             raise NotImplemented("No implemetation for `{}` tokenization type")
-            
-        print("Tokenizer: ",tokenizer_type)
 
 
     def __len__(self):
@@ -132,6 +130,6 @@ class TextDataset(Dataset):
     def __getitem__(self, index):
         label, caption = self.caption_pids[index], self.captions[index]
         tokens = self.tokenizer(caption)
-        caption_code, caption_length = pad_tokens(tokens, self.tokens_length_max)
+        token_ids, orig_token_length = pad_tokens(tokens, self.tokens_length_max)
 
-        return label, caption_code, caption_length
+        return label, token_ids, orig_token_length

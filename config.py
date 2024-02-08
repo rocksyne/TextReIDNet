@@ -89,16 +89,18 @@ def sys_configuration(platform_name:str=platform.node(), dataset_name:str="CUHK-
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
     # +++++++++++++[Training configurations]+++++++++++++
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
-    configs['epoch']:int = 40 # The umber of epochs for which model should be trained
+    configs['epoch']:int = 60# The umber of epochs for which model should be trained
     configs['adam_alpha']:float = 0.90 # Momentum term of AdamW
     configs['adam_beta']:float = 0.999 # Momentum term of AdamW
-    configs["epoch_decay"]:list[int] = [20,30] # Params for torch.optim.lr_scheduler.StepLR: when decays should hapen
+    configs["epoch_decay"]:list[int] = [20,40] # Params for torch.optim.lr_scheduler.StepLR: when decays should hapen
     configs['lr']:float = 0.001 # The initial learning rate
     configs['patience']:int = 3 # How many more epochs to train for after a metric fails to improve
     configs["val_dataset"]:str = "test" # Choose which dataset split to use for vaildation / evaluation. Values: `test` or `val`
     configs['device']:str  = "cuda" # If `cuda`, just use GPU ID 0 on all systems. Model is small anyway
-    configs['progress_bar_width']:int = 3 # How long progress bar should be.
-    configs['seed']:int = 3407 # seed for reicated training
+    configs['progress_bar_width']:int = 200 # How long progress bar should be.
+    configs['seed']:int = 3407 # The seed for results reproduction
+    configs['model_testing_data_split']:str = 'test' # The split of the dataset to use for testing. Values are `test` and `val`
+    configs['save_best_test_results_only']:bool = True # Save the best test resuls or all results
     
 
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -114,6 +116,7 @@ def sys_configuration(platform_name:str=platform.node(), dataset_name:str="CUHK-
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
     configs['train_log_path'] = os.path.join(PARENT_DIR,'data','logs','train.log')
     configs['test_log_path']  = os.path.join(PARENT_DIR,'data','logs','test.log')
+    configs['write_mode']:str = 'append' # Writing mode for log files. Values are `overwrite` and `append`
 
 
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -129,7 +132,7 @@ def sys_configuration(platform_name:str=platform.node(), dataset_name:str="CUHK-
         configs['CUHK_PEDES_dataset_parent_dir']:str = "/media/rockson/Data_drive/datasets/CUHK-PEDES"
         configs['RSTPReid_dataset_parent_dir']:str = None # TODO complete it
         configs['num_workers']:int = 6 # Use x CPU cores max
-        configs['batch_size']:int = 2 # Self explanatory, but use x batches
+        configs['batch_size']:int = 8 # Self explanatory, but use x batches
 
     elif platform_name == 'ultron': # Other dedicated simulation server
         configs['CUHK_PEDES_dataset_parent_dir']:str = "/datasets/CUHK-PEDES"
