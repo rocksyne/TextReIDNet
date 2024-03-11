@@ -68,7 +68,7 @@ Figure 2. Example of Top-5 person search results on the CUHK-PEDES dataset.
 &nbsp;
 ## Train (from scratch only, no resume capability)
 - First read and modify the ```config.py``` to suit your system parameters
-- ```python train.py```. The training progress and values are logged into ```TextReIDNet/data/logs/train.log```
+- Run ```python train.py```. The training progress and values are logged into ```TextReIDNet/data/logs/train.log```
 
 &nbsp;
 ## Test and Inference on Nvidia Jetson Nano
