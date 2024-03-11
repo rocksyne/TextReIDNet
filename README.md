@@ -41,8 +41,6 @@ The remaining requirements are specified in [requirements.txt](requirements.txt)
 - Download or clone TextReIDNet repository
 - Navigate into TextReIDNet directory: ```cd /path/to/TextReIDNet```
 - Download the pre-trained model [TextReIDNet_State_Dicts.pth.tar](https://drive.google.com/file/d/1Clry-_oJcQXDbA92H0ARUerlzw-9hdrI/view?usp=sharing) and put it into ```TextReIDNet/data/checkpoints/TextReIDNet_State_Dicts.pth.tar```
-- Download ```bpe_simple_vocab_16e6.txt.gz``` from [here](https://github.com/openai/CLIP/blob/main/clip/bpe_simple_vocab_16e6.txt.gz) and place it in ```TextReIDNet_github/data/bpe_simple_vocab_16e6.txt.gz```
-- https://github.com/openai/CLIP/blob/main/clip/bpe_simple_vocab_16e6.txt.gz
 - Read and modify the ```config.py``` to suit your system resources and requirements
 
 &nbsp;
