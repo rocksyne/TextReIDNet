@@ -32,7 +32,6 @@ The remaining requirements are specified in [requirements.txt](requirements.txt)
 - CUHK-PEDES dataset: please see [here](https://github.com/ShuangLI59/Person-Search-with-Natural-Language-Description)
 - RSTPReid dataset: please see [here](https://github.com/NjtechCVLab/RSTPReid-Dataset)
 - Pretrained model (30 epochs): [TextReIDNet_State_Dicts.pth.tar](https://drive.google.com/file/d/1Clry-_oJcQXDbA92H0ARUerlzw-9hdrI/view?usp=sharing)
-- ```bpe_simple_vocab_16e6.txt.gz```: [Download](https://github.com/openai/CLIP/blob/main/clip/bpe_simple_vocab_16e6.txt.gz) 
 
 
 &nbsp;
