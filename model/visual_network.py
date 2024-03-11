@@ -35,5 +35,8 @@ class VisualNetwork(nn.Module):
             x = block(x)
             features.append(x)
 
+        # TODO: Clean this debug finally
+        # for fearture in features:
+        #     print("Backbone: {} {}".format(fearture.shape, fearture.dtype))
         return features[-1] # final layer output
     
