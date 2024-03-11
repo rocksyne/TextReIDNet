@@ -84,6 +84,7 @@ Download and use the [Ubuntu 20.04 OS image](https://github.com/Qengineering/Jet
 - Clone ```TextReIDNet``` onto your Nano device
 - Download the pre-trained model [TextReIDNet_State_Dicts.pth.tar](https://drive.google.com/file/d/1Clry-_oJcQXDbA92H0ARUerlzw-9hdrI/view?usp=sharing) put it into ```TextReIDNet/data/checkpoints/TextReIDNet_State_Dicts.pth.tar```
 - Read and modify the ```TextReIDNet/config.py``` file (where neccessary)
+- Execute ```TextReIDNet_github/nano/nano_export.py``` to convert the pytorch model to TensorRT on the Nano
 - Execute ```TextReIDNet_github/nano/nano_import.py``` to get the run-time values on the Nano
 
 Please note: The initial run-time of the first iteration is always significantly longer than that of subsequent iterations. This is due to the (delayed) loading of additional modules.
