@@ -1,9 +1,0 @@
-Image: test_query/p88_s172.jpg
-
-1. The female has short black hair and is wearing a purple shirt, jean shorts, shoes with a small heal and carrying a tan backpack.
-2. A woman wearing a purple shirt, a pair of blue jean shorts and a pair of sandals.
-
-
-image: test_query/p353_s635.jpg
-1. A girl wearing a white, short sleeve shirt, a pink, ruffled dress and a pair of black shoes.
-2. The woman wears a thigh length, pink, pleated dress with a white knit sweater and black flat dress shoes.
