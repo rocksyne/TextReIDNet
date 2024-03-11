@@ -9,3 +9,4 @@ TextReIDNet is a lightweight person re-identification model designed explicitly 
 impressive 52.76% and 35.71% top-1 accuracy on the CUHK-PEDES and RSTPReid datasets respectively.
 
 ![](docs/TextReIDNet_architetcure.png)
+Figure 1. TextReIDNet’s architecture comprises a visual and language network, and a joint embedding for matching the visual and textual features.
