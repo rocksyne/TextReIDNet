@@ -86,7 +86,7 @@ Download and use the [Ubuntu 20.04 OS image](https://github.com/Qengineering/Jet
 - Read and modify the ```TextReIDNet/config.py``` file (where neccessary)
 - Execute ```TextReIDNet_github/nano/nano_import.py``` to get the run-time values on the Nano
 
-Please note: The initial run-time of the first iteration is always significantly longer than that of subsequent iterations. This is due to the loading of additional modules.
+Please note: The initial run-time of the first iteration is always significantly longer than that of subsequent iterations. This is due to the (delayed) loading of additional modules.
 
 
 
