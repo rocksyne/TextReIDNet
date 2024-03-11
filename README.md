@@ -10,3 +10,7 @@ impressive 52.76% and 35.71% top-1 accuracy on the CUHK-PEDES and RSTPReid datas
 
 ![](docs/TextReIDNet_architetcure.png)
 Figure 1. TextReIDNet’s architecture comprises a visual and language network, and a joint embedding for matching the visual and textual features.
+
+&nbsp;
+
+# Results
