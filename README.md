@@ -7,3 +7,5 @@ Re-identification on Embedded Devices".
 # Summary
 TextReIDNet is a lightweight person re-identification model designed explicitly for embedded devices. TextReIDNet has a total of 32.29 million parameters only, but a achieves an
 impressive 52.76% and 35.71% top-1 accuracy on the CUHK-PEDES and RSTPReid datasets respectively.
+
+![](docs/TextReIDNet_architetcure.png)
