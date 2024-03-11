@@ -42,7 +42,7 @@ def sys_configuration(platform_name:str=platform.node(), dataset_name:str="CUHK-
     """
     
     allowed_platforms_names:list[str] = ['PC-SIM','deeplearning','ultron','nano'] # add your platform name to this list
-    allowed_dataset_names:list[str] = ["CUHK-PEDES","RSTPReid"]
+    allowed_dataset_names:list[str] = ["CUHK-PEDES","RSTPReid",'custom']
 
     if platform_name not in allowed_platforms_names:
         raise ValueError('`platform_name` be must string and of value `PC-SIM`,`deeplearning`,`ultron`,`nano` \
@@ -106,17 +106,21 @@ def sys_configuration(platform_name:str=platform.node(), dataset_name:str="CUHK-
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
     # +++++++++++[Loss Functions Configurations]+++++++++
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
-    configs['margin']:float = 0.2
+    configs['margin']:float = 0.5
     configs['ranking_loss_alpha']:float = 1.0
     configs['identity_loss_beta']:float = 1.0
 
 
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
-    # ++++++++++++[Data logging Configurations]++++++++++
+    # ++++++++[Data logging Configurations & Misc.]++++++
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
     configs['train_log_path'] = os.path.join(PARENT_DIR,'data','logs','train.log')
     configs['test_log_path']  = os.path.join(PARENT_DIR,'data','logs','test.log')
     configs['write_mode']:str = 'append' # Writing mode for log files. Values are `overwrite` and `append`
+    configs['model_save_path']:str = os.path.join(PARENT_DIR, 'data', 'checkpoints')
+    configs['plot_save_path']:str = os.path.join(PARENT_DIR, 'data', 'plots')
+    configs['log_config_paprameters']:bool = True # Log config parameters as well
+    configs['project_parent_dir']:str = PARENT_DIR # Absolute project path
 
 
     # +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -126,13 +130,13 @@ def sys_configuration(platform_name:str=platform.node(), dataset_name:str="CUHK-
         configs['CUHK_PEDES_dataset_parent_dir']:str = "/home/users/roagyeman/research/datasets/CUHK-PEDES" # parent dir of the dataset
         configs['RSTPReid_dataset_parent_dir']:str = None # TODO complete it
         configs['num_workers']:int =  16 # Use x CPU cores max
-        configs['batch_size']:int = 32 # Self explanatory, but use x batches
+        configs['batch_size']:int = 16 # Self explanatory, but use x batches
         
     elif platform_name == 'deeplearning': # Development server
         configs['CUHK_PEDES_dataset_parent_dir']:str = "/media/rockson/Data_drive/datasets/CUHK-PEDES"
         configs['RSTPReid_dataset_parent_dir']:str = None # TODO complete it
         configs['num_workers']:int = 6 # Use x CPU cores max
-        configs['batch_size']:int = 8 # Self explanatory, but use x batches
+        configs['batch_size']:int = 1 # Self explanatory, but use x batches
 
     elif platform_name == 'ultron': # Other dedicated simulation server
         configs['CUHK_PEDES_dataset_parent_dir']:str = "/datasets/CUHK-PEDES"
@@ -158,6 +162,10 @@ def sys_configuration(platform_name:str=platform.node(), dataset_name:str="CUHK-
 
     elif configs["dataset_name"] == "RSTPReid": # https://arxiv.org/pdf/2109.05534.pdf
         raise NotImplementedError("No implementation for `{}` dataset.".format(configs["dataset_name"]))
+    
+    elif configs["dataset_name"] == "custom":
+        configs["mean"] = [0.485, 0.456, 0.406] # Mean for RGB channels
+        configs["std"]  = [0.229, 0.224, 0.225] # Standard deviation for RGB channels
     
     else:
         raise ValueError("Invalid value for dataset name.")

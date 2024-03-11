@@ -5,8 +5,6 @@ Doc.: Train TextReIDNet
 """
 
 # System modules
-import os
-import warnings
 import logging
 import datetime
 
@@ -15,7 +13,6 @@ import torch
 import numpy as np
 from tqdm import tqdm
 from torch import optim
-from torch import autocast
 from torch.cuda.amp import GradScaler
 
 # Application modules
@@ -28,7 +25,8 @@ from evaluation.ranking_loss import RankingLoss
 from evaluation.identity_loss import IdentityLoss
 from evaluation.evaluations import calculate_similarity
 from evaluation.evaluations import evaluate
-from test_during_training import test, write_result
+from utils.miscellaneous_utils import save_model_checkpoint
+from utils.miscellaneous_utils import SavePlots
 
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -64,17 +62,42 @@ scheduler = optim.lr_scheduler.MultiStepLR(optimizer, config.epoch_decay)
 current_best_top1_accuracy:float = 0.
 
 # Logging info
+loss_plots = SavePlots(name='loss_plot.png', 
+                       save_path=config.plot_save_path,  
+                       legends=["Ranking Loss", "Identity Loss", "Total Loss"],
+                       horizontal_label="Epochs",
+                       vertical_label="Losses",
+                       title="Training Losses Over Epochs")
+
+accuracy_plots = SavePlots(name='accurracy_plot.png', 
+                           save_path=config.plot_save_path,  
+                           legends=["Top-1", "Top-5", "Top-10"],
+                           horizontal_label="Epochs",
+                           vertical_label="Accuracies",
+                           title="Accuracies Over Epochs")
+
 time_stamp = str(datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"))
 train_logger:logging = setup_logger(name='train_logger',log_file_path=config.train_log_path, write_mode=config.write_mode)
 test_logger:logging  = setup_logger(name='test_logger',log_file_path=config.test_log_path, write_mode=config.write_mode)
-train_logger.info("\n Started on {} \n {}".format(time_stamp,"="*35))
+train_logger.info("\n Started on {} \n {} \n".format(time_stamp,"="*35))
 test_logger.info("\n Started on {} \n {}".format(time_stamp,"="*35))
 
 if config.save_best_test_results_only:
     test_logger.info("\n Note: saving best test (inference) results only: \n")
 
+if config.log_config_paprameters:
+    for key in config.keys():
+        train_logger.info("{}: {}".format(key, config[key]))
+        test_logger.info("{}: {}".format(key, config[key]))
+    train_logger.info("\n")
+    test_logger.info("\n")
+
 
 if __name__ == '__main__':
+
+    print("")
+    print('[INFO] Total parameters: {} million'.format(sum(p.numel() for p in model.parameters()) / 1000000.0))
+    print("")
 
     for current_epoch in range(1,config.epoch+1):
 
@@ -99,6 +122,7 @@ if __name__ == '__main__':
                 image = train_data_batch['images'].to(config.device)
                 label = train_data_batch['pids'].to(config.device)
                 token_ids = train_data_batch['token_ids'].to(config.device)
+
                 orig_token_length = train_data_batch['orig_token_length'].to(config.device)
 
                 # Zero-grad before making prediction with model
@@ -111,8 +135,8 @@ if __name__ == '__main__':
                     visaual_embeddings, textual_embeddings = model(image, token_ids, orig_token_length)
 
                     # Calculate losses
-                    train_ranking_loss = ranking_loss_fnx(visaual_embeddings, textual_embeddings, label)
-                    train_identity_loss = identity_loss_fnx(visaual_embeddings, textual_embeddings, label)
+                    train_ranking_loss = ranking_loss_fnx(visaual_embeddings, textual_embeddings, label)*config.ranking_loss_alpha
+                    train_identity_loss = identity_loss_fnx(visaual_embeddings, textual_embeddings, label)*config.identity_loss_beta
                     train_total_loss = (config.ranking_loss_alpha*train_ranking_loss + config.identity_loss_beta*train_identity_loss)
                 
                 scaler.scale(train_total_loss).backward()
@@ -132,11 +156,14 @@ if __name__ == '__main__':
                 train_data_loader_progress.set_postfix(values) # update progress bar
         
         # write results for this ecpoch into log file
-        txt_2_write = "Epoch: {} Ranking Loss: {:.5} Identity Loss: {:.5} Total Loss: {:.5}".format(current_epoch,
+        txt_2_write = "Epoch: {} Ranking Loss: {:.4} Identity Loss: {:.4} Total Loss: {:.4}".format(current_epoch,
                                                                                                     np.mean(train_ranking_loss_list),
                                                                                                     np.mean(train_identity_loss_list),
                                                                                                     np.mean(train_total_loss_list))
         train_logger.info(txt_2_write)
+        loss_plots(current_epoch,[np.mean(train_ranking_loss_list),
+                                  np.mean(train_identity_loss_list),
+                                  np.mean(train_total_loss_list)])
            
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -173,22 +200,24 @@ if __name__ == '__main__':
         visaual_embeddings_list = torch.cat(visaual_embeddings_list,0)
         textual_embeddings_list = torch.cat(textual_embeddings_list,0)
         visual_labels_list = torch.cat(visual_labels_list,0).cpu() # gallery / galleries depending on batch_size
-        textual_labels_list = torch.cat(textual_labels_list,0).cpu() # queries depending on batch_size
+        textual_labels_list = torch.cat(textual_labels_list,0).cpu() # query / queries depending on batch_size
        
         similarity = calculate_similarity(visaual_embeddings_list,textual_embeddings_list).numpy()
         ranks, mAP = evaluate(similarity.T, textual_labels_list, visual_labels_list) # calculate top ranks and mAP
         
         # logging / saving data
-        txt_2_write = "Epoch: {} R1: {:.5}, R5: {:.5}, R10: {:.5}, map: {:.5}".format(current_epoch, ranks[0], ranks[4], ranks[9], mAP)
+        txt_2_write = "Epoch: {} Top_1: {:.4}, Top_5: {:.4}, Top_10: {:.4}, mAP: {:.4}".format(current_epoch, ranks[0], ranks[4], ranks[9], mAP)
         if config.save_best_test_results_only and (ranks[0] > current_best_top1_accuracy):
             test_logger.info(txt_2_write)
-            # save best model only
+            save_model_checkpoint(model,config.model_save_path)
+            current_best_top1_accuracy = ranks[0]
 
         else: # log everything, worse, same, or better
             test_logger.info(txt_2_write)
+            save_model_checkpoint(model,config.model_save_path)
         
         print(txt_2_write) # show everything to console though
-        # save the plots
+        accuracy_plots(current_epoch,[ranks[0], ranks[4], ranks[9]])
 
         print("") # put space between each epoch progress bar
 
