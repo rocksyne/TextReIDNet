@@ -2,3 +2,4 @@
 # download pretrained model
 # calcuate means
 # prepare /  download paraphrases
+# TODO
