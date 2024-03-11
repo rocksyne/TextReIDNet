@@ -7,10 +7,13 @@ import os
 import random
 import logging
 import datetime
+from typing import Any
 
 # 3rd party modules
 import torch
 import numpy as np
+import matplotlib.pyplot as plt
+import torchvision.transforms as T
 
 
 def set_seed(seed_value:int=3407):
@@ -28,7 +31,9 @@ def set_seed(seed_value:int=3407):
     torch.backends.cudnn.benchmark = False
 
 
-
+# +++++++++++++++++++++++++++++++++++++++++++++++++
+# +++++++++++++++[Utility Functions]+++++++++++++++
+# +++++++++++++++++++++++++++++++++++++++++++++++++
 def setup_logger(name:str=None, 
                  log_file_path:str=None, 
                  write_mode:str='overwrite', 
@@ -79,7 +84,6 @@ def setup_logger(name:str=None,
     return logger
 
 
-
 def pad_tokens(tokens, tokens_length_max):
     """
     This entire code snippet is adapted from the URL below.
@@ -104,7 +108,6 @@ def pad_tokens(tokens, tokens_length_max):
     return tokens, tokens_length
 
 
-
 def collate(batch):
     """Data collator for the dataloader"""
     keys = set([key for b in batch for key in b.keys()])
@@ -123,3 +126,124 @@ def collate(batch):
             raise TypeError(f"Unexpect data type: {type(v[0])} in a batch.")
 
     return batch_tensor_dict
+
+
+
+def get_transform(dataset_split:str=None, config:dict=None):
+    """
+    Doc.:   Get the appropriate transform
+    Args.:  • dataset_split: The dataset split. `train`, `val`, `test`
+            • config: The configuration (dict) object for system configuration
+    Return: torchvision.transforms
+    """
+    if dataset_split not in ['train','inference']:
+        raise ValueError("Invalid dataset_split. Expected value to be `train`, `inference` but got `{}`".format(dataset_split))
+    
+    if config is None:
+        raise ValueError("`config` can not be None.")
+    
+    if dataset_split == 'train':
+        transform = T.Compose([T.Resize(config.image_size, T.InterpolationMode.BICUBIC),
+                               T.Pad(10),
+                               T.RandomCrop(config.image_size),
+                               T.RandomHorizontalFlip(),
+                               T.ToTensor(),
+                               T.Normalize(config.mean,config.std)])
+        
+    else: # this is for val and test
+        transform = T.Compose([T.Resize(config.image_size, T.InterpolationMode.BICUBIC),
+                               T.ToTensor(),
+                               T.Normalize(config.mean,config.std)])
+        
+    return transform
+
+
+def save_model_checkpoint(model=None, save_dir:str=None)->None:
+    """
+    Doc.:   Save the trained model for inference
+    Args.:  • model: instance of the model to save
+            • save_path: path to where the model should be saved
+    """
+    if os.path.isdir(save_dir) is False:
+        raise FileNotFoundError("`{}` does not exist.".format(save_dir))
+    torch.save(model.state_dict(),os.path.join(save_dir,"TextReIDNet_State_Dicts.pth.tar")) # Save state dicts
+    #torch.save(model,os.path.join(save_dir,"TextReIDNet_Full_Model.pth")) # Save the full model
+
+
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++
+# ++++++++++++++++[Utility Classes]++++++++++++++++
+# +++++++++++++++++++++++++++++++++++++++++++++++++
+class SavePlots(object):
+    def __init__(self, 
+                 name: str = "save_plot.png", 
+                 save_path: str = None,  
+                 legends: list = None,
+                 horizontal_label: str = "Epochs",
+                 vertical_label: str = "Losses",
+                 title: str = "Training Losses Over Epochs"):
+        
+        if save_path is None:
+            save_path = "."  # default to current directory if none provided
+        elif not os.path.isdir(save_path):
+            raise FileNotFoundError(f"`{save_path}` does not exist.")
+        
+        self.name: str = os.path.join(save_path, name)  # absolute path name
+        
+        if legends is None or not legends:
+            raise ValueError("`legends` cannot be `None` or empty.")
+        self.legends: list = legends
+        
+        self.epochs: list = []
+        self.horizontal_label: str = horizontal_label
+        self.vertical_label: str = vertical_label
+        self.title: str = title
+
+        # create a dynamic holder for values to be plotted
+        self.dynamic_variable: dict[int, list[float]] = {indx: [] for indx in range(len(self.legends))}
+    
+    def update(self, epoch: int, values: list[float]):
+        """
+        Doc.: Populate the variables to hold numbers
+        Args.:  
+        • epoch: current epoch
+        • values: current list of values
+        """
+        if values is None:
+            raise ValueError("`values` cannot be `None`.")
+        
+        self.epochs.append(epoch)
+        zipped_data = zip(range(len(self.legends)), values)
+
+        for indx, value in zipped_data:
+            self.dynamic_variable[indx].append(value)
+
+    def __call__(self, epoch: int = 0, values: list[float] = None):
+        """
+        Doc.: Function call to save the plots
+        Args.:  
+        • epoch: The current epoch
+        • values: The list of values to be plotted. Each value corresponds to a list for epochs
+        """
+        if values is None:
+            raise ValueError("`values` cannot be `None`.")
+        if len(values) != len(self.legends):
+            raise ValueError(f"The list of values does not match the number of intended plots. No. of values is {len(values)} and no. of legends is {len(self.legends)}.")
+        
+        self.update(epoch=epoch, values=values)
+
+        plt.figure(figsize=(10, 5))
+        # plot values to graph
+        for indx in self.dynamic_variable:
+            plt.plot(self.epochs, self.dynamic_variable[indx], label=self.legends[indx])
+        
+        # plot stuff
+        plt.xlabel(self.horizontal_label)
+        plt.ylabel(self.vertical_label)
+        plt.title(self.title)
+        plt.legend()
+        plt.grid(True)
+        plt.tight_layout()
+        plt.savefig(self.name)
+        plt.close() # https://heitorpb.github.io/bla/2020/03/18/close-matplotlib-figures/
+
