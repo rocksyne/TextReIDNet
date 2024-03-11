@@ -2,49 +2,13 @@
 Doc.:   Codebase adapted from https://github.com/anosorae/IRRA/tree/main
 """
 
-# System modules
-import os.path as op
-from typing import List
-
 # 3rd party modules
-import torchvision.transforms as T
 from torch.utils.data import DataLoader
 
 # Application modules
-from utils.iotools import read_json
-from utils.miscellaneous_utils import collate
+from utils.miscellaneous_utils import collate, get_transform
 from datasets.cuhkpedes import CUHKPEDES
 from datasets.bases import ImageTextDataset, ImageDataset, TextDataset
-
-
-def get_transform(dataset_split:str=None, config:dict=None):
-    """
-    Doc.:   Get the appropriate transform
-    Args.:  • dataset_split: The dataset split. `train`, `val`, `test`
-            • config: The configuration (dict) object for system configuration
-    Return: torchvision.transforms
-    """
-    if dataset_split not in ['train','inference']:
-        raise ValueError("Invalid dataset_split. Expected value to be `train`, `inference` but got `{}`".format(dataset_split))
-    
-    if config is None:
-        raise ValueError("`config` can not be None.")
-    
-    if dataset_split == 'train':
-        transform = T.Compose([T.Resize(config.image_size, T.InterpolationMode.BICUBIC),
-                               T.Pad(10),
-                               T.RandomCrop(config.image_size),
-                               T.RandomHorizontalFlip(),
-                               T.ToTensor(),
-                               T.Normalize(config.mean,config.std)])
-        
-    else: # this is for val and test
-        transform = T.Compose([T.Resize(config.image_size, T.InterpolationMode.BICUBIC),
-                               T.ToTensor(),
-                               T.Normalize(config.mean,config.std)])
-        
-    return transform
-
 
 
 # build the dataloader

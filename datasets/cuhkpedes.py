@@ -97,7 +97,7 @@ class CUHKPEDES(object):
             caption_pids = []
             for anno in annos:
                 #pid = int(anno['id'])
-                pid = int(anno['id']) - 12004 # make pid begin from 0
+                pid = int(anno['id']) #- 1 # make pid begin from 0
                 pid_container.add(pid)
                 img_path = op.join(self.img_dir, anno['file_path'])
                 img_paths.append(img_path)
