@@ -19,7 +19,7 @@ class TextReIDNet(nn.Module):
                 Architecture Summary
                 ---------------------
                 Detailed diagram is available in ../docs/TextReIDNet_architetcure.png
-                
+
                                                                                     -----------------
                 image >> EfficientNetb0 >> DSC >> AP >> DSC >>|=================|---| Ranking loss  |
                                                               | Joint embedding |   -----------------
@@ -41,9 +41,9 @@ class TextReIDNet(nn.Module):
         self.configs = configs
         self.visual_network = VisualNetwork()
         self.language_network = GRULanguageNetwork(configs)
-        self.visual_features_downscale = DepthwiseSeparableConvWithSimpleAttention(1280, 1024) # DepthwiseSeparableConv(1280, 1024)
+        self.visual_features_downscale = DepthwiseSeparableConv(1280, 1024)
         self.adaptive_max_pooling = nn.AdaptiveMaxPool2d((1, 1))
-        self.depthwise_seperable_convolution = DepthwiseSeparableConvWithSimpleAttention(1024, self.configs.feature_length) # DepthwiseSeparableConv(1024, self.configs.feature_length)
+        self.depthwise_seperable_convolution = DepthwiseSeparableConv(1024, self.configs.feature_length)
 
     def forward(self, image, text_ids:torch.tensor=None, text_length:torch.tensor=None)->list[torch.tensor]:
         """
