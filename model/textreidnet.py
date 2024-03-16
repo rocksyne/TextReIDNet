@@ -8,7 +8,6 @@ from torch import nn
 from model.visual_network import VisualNetwork
 from model.language_network import GRULanguageNetwork
 from model.model_utils import DepthwiseSeparableConv
-from model.model_utils import DepthwiseSeparableConvWithSimpleAttention
 
 
 class TextReIDNet(nn.Module):
