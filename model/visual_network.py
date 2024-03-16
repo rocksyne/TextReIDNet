@@ -12,7 +12,7 @@ class VisualNetwork(nn.Module):
 
                 Architecture of EfficientNet-B0 baseline network.
                 =====================================================================
-                | Stage |  Operator          |  Resolution  | #Channels  | #Layers |
+                | Stage |  Operator          |  Resolution   | #Channels  | #Layers |
                 =====================================================================
                 | 1     |  Conv3x3           |  224 x 224    | 32         |  1      |
                 | 2     |  MBConv1, k3x3     |  112 x 112    | 16         |  1      |
