@@ -6,7 +6,6 @@ from torch import nn
 from torch.nn import init
 
 
-
 # +++++++++++++++++++++++++++++++++++++++++++++++++
 # +++++++++++++++[Utility Functions]+++++++++++++++
 # +++++++++++++++++++++++++++++++++++++++++++++++++
@@ -40,8 +39,7 @@ def weights_init_kaiming(m, pi=0.01):
         init.constant_(m.weight.data, 1)
         init.constant_(m.bias.data, 0)
 
-
-        
+ 
 # +++++++++++++++++++++++++++++++++++++++++++++++++
 # ++++++++++++++++[Utility Classes]++++++++++++++++
 # +++++++++++++++++++++++++++++++++++++++++++++++++
@@ -60,7 +58,6 @@ class Swish(nn.Module):
 
     def forward(self, x):
         return x * torch.sigmoid(self.beta * x)
-    
 
 
 class DepthwiseSeparableConv(nn.Module):
@@ -93,10 +90,6 @@ class DepthwiseSeparableConv(nn.Module):
         return self.depthwise_separable_conv(x)
 
 
-
-
-
-
 class ChannelAttention(nn.Module):
     def __init__(self, in_channels, reduction_ratio=16):
         super().__init__()
@@ -113,6 +106,7 @@ class ChannelAttention(nn.Module):
         y = self.avg_pool(x).view(b, c)
         y = self.fc(y).view(b, c, 1, 1)
         return x * y.expand_as(x)
+
 
 class DepthwiseSeparableConvWithSimpleAttention(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size=3, reduction_ratio=16):
