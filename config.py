@@ -130,7 +130,7 @@ def sys_configuration(platform_name:str=platform.node(), dataset_name:str="CUHK-
         configs['CUHK_PEDES_dataset_parent_dir']:str = "/home/users/roagyeman/research/datasets/CUHK-PEDES" # parent dir of the dataset
         configs['RSTPReid_dataset_parent_dir']:str = None # TODO complete it
         configs['num_workers']:int =  16 # Use x CPU cores max
-        configs['batch_size']:int = 16 # Self explanatory, but use x batches
+        configs['batch_size']:int = 32 # Self explanatory, but use x batches
         
     elif platform_name == 'deeplearning': # Development server
         configs['CUHK_PEDES_dataset_parent_dir']:str = "/media/rockson/Data_drive/datasets/CUHK-PEDES"
@@ -157,15 +157,15 @@ def sys_configuration(platform_name:str=platform.node(), dataset_name:str="CUHK-
     configs['dataset_name'] = dataset_name
     if configs["dataset_name"] == "CUHK-PEDES": # https://arxiv.org/pdf/1702.05729.pdf
         configs["dataset_path"]:str = configs['CUHK_PEDES_dataset_parent_dir']
-        configs["mean"] = [0.485, 0.456, 0.406] # Mean for RGB channels
-        configs["std"]  = [0.229, 0.224, 0.225] # Standard deviation for RGB channels
+        configs["mean"] = [0.4416847, 0.41812873, 0.4237452] # Mean for RGB channels
+        configs["std"]  = [0.3088255, 0.29743394, 0.301009] # Standard deviation for RGB channels
 
     elif configs["dataset_name"] == "RSTPReid": # https://arxiv.org/pdf/2109.05534.pdf
         raise NotImplementedError("No implementation for `{}` dataset.".format(configs["dataset_name"]))
     
     elif configs["dataset_name"] == "custom":
-        configs["mean"] = [0.485, 0.456, 0.406] # Mean for RGB channels
-        configs["std"]  = [0.229, 0.224, 0.225] # Standard deviation for RGB channels
+        configs["mean"] = [0.4416847, 0.41812873, 0.4237452] # Mean for RGB channels
+        configs["std"]  = [0.3088255, 0.29743394, 0.301009] # Standard deviation for RGB channels
     
     else:
         raise ValueError("Invalid value for dataset name.")
