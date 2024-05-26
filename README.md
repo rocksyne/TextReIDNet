@@ -31,7 +31,7 @@ The remaining requirements are specified in [requirements.txt](requirements.txt)
 ## Resources
 - CUHK-PEDES dataset: please see [here](https://github.com/ShuangLI59/Person-Search-with-Natural-Language-Description)
 - RSTPReid dataset: please see [here](https://github.com/NjtechCVLab/RSTPReid-Dataset)
-- Pretrained model (30 epochs): [TextReIDNet_State_Dicts.pth.tar](https://drive.google.com/file/d/1Clry-_oJcQXDbA92H0ARUerlzw-9hdrI/view?usp=sharing)
+- Pretrained model (30 epochs): [TextReIDNet_State_Dicts.pth.tar](https://drive.google.com/file/d/1iGRlscz0Vev_fDLswj_yqIWu7C8EoZGU/view?usp=sharing)
 
 
 &nbsp;
@@ -39,12 +39,12 @@ The remaining requirements are specified in [requirements.txt](requirements.txt)
 - Install dependencies. Complete list of dependencies is in ```requirements.txt```
 - Download or clone TextReIDNet repository
 - Navigate into TextReIDNet directory: ```cd /path/to/TextReIDNet```
-- Download the pre-trained model [TextReIDNet_State_Dicts.pth.tar](https://drive.google.com/file/d/1Clry-_oJcQXDbA92H0ARUerlzw-9hdrI/view?usp=sharing) and put it into ```TextReIDNet/data/checkpoints/TextReIDNet_State_Dicts.pth.tar```
+- Download the pre-trained model [TextReIDNet_State_Dicts.pth.tar](https://drive.google.com/file/d/1iGRlscz0Vev_fDLswj_yqIWu7C8EoZGU/view?usp=sharing) and put it into ```TextReIDNet/data/checkpoints/TextReIDNet_State_Dicts.pth.tar```
 - Read and modify the ```config.py``` to suit your system resources and requirements
 
 &nbsp;
 ## Test (using pretrained model - 30 epochs)
-- Please make sure the pre-trained model [TextReIDNet_State_Dicts.pth.tar](https://drive.google.com/file/d/1Clry-_oJcQXDbA92H0ARUerlzw-9hdrI/view?usp=sharing) is downloaded put it into ```TextReIDNet/data/checkpoints/TextReIDNet_State_Dicts.pth.tar```
+- Please make sure the pre-trained model [TextReIDNet_State_Dicts.pth.tar](https://drive.google.com/file/d/1iGRlscz0Vev_fDLswj_yqIWu7C8EoZGU/view?usp=sharing) is downloaded put it into ```TextReIDNet/data/checkpoints/TextReIDNet_State_Dicts.pth.tar```
 - Also read and modify the ```config.py``` to suit your system parameters
 - ```python test.py```. The test results are logged to the console only.
 
@@ -52,7 +52,7 @@ The remaining requirements are specified in [requirements.txt](requirements.txt)
 ## Inference on sample images
 10 sample images are provided in ```TextReIDNet/data/samples/``` for inference purposes. ```boy_with_bag.jpg``` and ```girl_student.jpg``` are taken from the internet, while the remaining 8 are sampled from the CUHK-PEDES dataset. You may download and crop more single-person images from the internet and add them to ```TextReIDNet/data/samples/```.
 
-- Please make sure the pre-trained model [TextReIDNet_State_Dicts.pth.tar](https://drive.google.com/file/d/1Clry-_oJcQXDbA92H0ARUerlzw-9hdrI/view?usp=sharing) is downloaded put it into ```TextReIDNet/data/checkpoints/TextReIDNet_State_Dicts.pth.tar```
+- Please make sure the pre-trained model [TextReIDNet_State_Dicts.pth.tar](https://drive.google.com/file/d/1iGRlscz0Vev_fDLswj_yqIWu7C8EoZGU/view?usp=sharing) is downloaded put it into ```TextReIDNet/data/checkpoints/TextReIDNet_State_Dicts.pth.tar```
 - Also read and modify the ```config.py``` to suit your system parameters
 - modify the value of ```textual_description``` in ```TextReIDNet/inference/search_person.py``` with the description of the person you would like to retrieve from ```TextReIDNet/data/samples/```.
 - run ```TextReIDNet/inference/search_person.py```. The ranking results are logged to the console, while the top-1 image is saved to ```TextReIDNet/inference/retrieved_image.jpg```.
@@ -79,7 +79,7 @@ Download and use the [Ubuntu 20.04 OS image](https://github.com/Qengineering/Jet
 ### Steps
 - Follow the steps outlined [here](https://github.com/NVIDIA-AI-IOT/torch2trt) to install ```torch2trt ``` on the Nano device
 - Clone ```TextReIDNet``` onto your Nano device
-- Download the pre-trained model [TextReIDNet_State_Dicts.pth.tar](https://drive.google.com/file/d/1Clry-_oJcQXDbA92H0ARUerlzw-9hdrI/view?usp=sharing) put it into ```TextReIDNet/data/checkpoints/TextReIDNet_State_Dicts.pth.tar```
+- Download the pre-trained model [TextReIDNet_State_Dicts.pth.tar](https://drive.google.com/file/d/1iGRlscz0Vev_fDLswj_yqIWu7C8EoZGU/view?usp=sharing) put it into ```TextReIDNet/data/checkpoints/TextReIDNet_State_Dicts.pth.tar```
 - Read and modify the ```TextReIDNet/config.py``` file (where neccessary)
 - Execute ```TextReIDNet_github/nano/nano_export.py``` to convert the pytorch model to TensorRT on the Nano
 - Execute ```TextReIDNet_github/nano/nano_import.py``` to get the run-time values on the Nano
